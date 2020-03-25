@@ -13,7 +13,8 @@ class MyPageViewController: UIPageViewController {
     
     private(set) lazy var orderedViewControllers: [UIViewController] = {
         return [self.getNewViewController(name: "smsAndPhoneVC"),
-                self.getNewViewController(name: "emailVC")]
+                self.getNewViewController(name: "emailVC", 
+                 self.getNewViewController(name: "instructionVC")]
     }()
     
     override func viewDidLoad() {
