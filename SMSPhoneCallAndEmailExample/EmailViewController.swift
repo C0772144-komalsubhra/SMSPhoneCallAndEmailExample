@@ -37,6 +37,33 @@ class EmailViewController: UIViewController, MFMailComposeViewControllerDelegate
             print("NO Email Client exist")
         }
     }
+   
+    @IBAction func fetchContacts(_ sender: UIButton) {
+        let contactStore = CNContactStore()
+        var contacts = [CNContact]()
+        let keys = [
+                CNContactFormatter.descriptorForRequiredKeys(for: .fullName),
+                        CNContactPhoneNumbersKey,
+                        CNContactEmailAddressesKey
+                ] as [Any]
+        let request = CNContactFetchRequest(keysToFetch: keys as! [CNKeyDescriptor])
+        do {
+            try contactStore.enumerateContacts(with: request){
+                    (contact, stop) in
+                // Array containing all unified contacts from everywhere
+                contacts.append(contact)
+                for phoneNumber in contact.phoneNumbers {
+                    if let number = phoneNumber.value as? CNPhoneNumber, let label = phoneNumber.label {
+                        let localizedLabel = CNLabeledValue<CNPhoneNumber>.localizedString(forLabel: label)
+                        print("\(contact.firstName) \(contact.surName) tel:\(localizedLabel) -- \(number.stringValue), email: \(contact.emailAdd)")
+                    }
+                }
+            }
+            print(contacts)
+        } catch {
+            print("can't fetch contacts")
+        }    
+    }
     
     // MFMailComposeViewControllerDelegate
     func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
